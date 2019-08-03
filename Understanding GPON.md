@@ -283,7 +283,7 @@ The OLT port connecting to PE is 0/7/0
 Frame 0 Slot 8 Port 0 ONT-ID 0
 <pre>
  interface gpon 0/8
- ont add 0 0 sn-auth "4857544308D8DD10" omci ont-lineprofile-name LINE_PRF ont-srvprofile-name SRV_PRF desc "SITE1" 
+ ont add 0 0 sn-auth "4857544308D8DD10" omci ont-lineprofile-name LINE_PRF ont-srvprofile-name SRV_PRF desc SITE1 
 </pre>
 
 ## Create service-port
