@@ -58,6 +58,60 @@ set protocols l2cicuit neighbour 10.1.1.1 interface ge-0/0/0.1001 virtual-circui
 show l2circuit connection interface ge-0/0/0.1001
 </pre>
 
+## Local layer 2 circuit
+For L2 circuit whose ends terminate on the same router, that is, two different logical interfaces(or physical) for both ends are configured on the same router there is a number of options to go about it as listed below:
+- Interface-switch
+- Bridge-domain
+- local-switching
+
+### Interface-switch
+This JunOS feature allows for configuration of Layer 2 switching cross-connects. The cross-connect is  bidirectional, so packets received on the first interface are transmitted out the second interface, and those received on the second interface are  transmitted out the first.  For Layer 2 switching cross-connects to work, you must also configure MPLS.
+The interface-switch can only be configured between two interfaces not more as it does not involve learning of mac addresses and it simply mirrors traffic between the two interfaces if you will.
+
+#### Configuration:
+<pre>
+ set protocols connections interface-switch SAMPLE interface ge-1/0/8.259
+ set protocols connections interface-switch SAMPLE interface ge-1/1/2.259
+ set interfaces ge-1/0/8 unit 259 description SITE1
+ set interfaces ge-1/0/8 unit 259 encapsulation vlan-ccc
+ set interfaces ge-1/0/8 unit 259 family ccc
+ set interfaces ge-1/1/2 unit 259 description SITE2
+ set interfaces ge-1/1/2 unit 259 encapsulation vlan-ccc
+ set interfaces ge-1/1/2 unit 259 family ccc
+
+show connections interface-switch SAMPLE    
+  Connection/Circuit                Type        St      Time last up     # Up trans
+ SAMPLE                        if-sw       Up      Sep 11 18:05:38           1
+   ge-1/0/8.259                     intf  Up
+   ge-1/1/2.259                     intf  Up
+</pre>
+
+
+### Local-switching
+
+#### JunOS Configuration
+<pre>
+set protocols l2circuit local-switching interface ge-0/1/3.4094 end-interface interface ge-0/0/2.4094
+set interfaces ge-0/1/3.4094 vlan-id 4094 encapsulation vlan-ccc family ccc
+set interfaces ge-0/0/2.4094 vlan-id 4094 encapsulation vlan-ccc family ccc
+</pre>
+
+#### Cisco IOS configuration
+<pre>
+interface GigabitEthernet1.4094
+	encapsulation dot1q 4094
+interface Gigabitthernet2.4094
+ 	encapsulation dot1q 4094
+connect TEST Gig1.4094 Gig2.4094
+
+sh connection name TEST
+Connection: 4 - TEST
+ Current State: ADMIN UP
+ Segment 1: GigabitEthernet1.4094 up
+ Segment 2: GigabitEthernet2.4094 up
+</pre>
+
+
 ## VPLS Manual discovery and LDP signalling FEC128  
 <img width="646" alt="VPLS Manual ldp" src="https://user-images.githubusercontent.com/50369643/62411862-758ee680-b602-11e9-9024-18ec973a257e.png">  
 
