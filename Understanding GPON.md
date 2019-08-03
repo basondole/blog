@@ -281,15 +281,15 @@ The OLT port connecting to PE is 0/7/0
 
 ### Add ONT
 Frame 0 Slot 8 Port 0 ONT-ID 0
-<pre>
- interface gpon 0/8
- ont add 0 0 sn-auth "4857544308D8DD10" omci ont-lineprofile-name LINE_PRF ont-srvprofile-name SRV_PRF desc SITE1 
-</pre>
+```
+interface gpon 0/8
+ont add 0 0 sn-auth "4857544308D8DD10" omci ont-lineprofile-name LINE_PRF ont-srvprofile-name SRV_PRF desc SITE1 
+```
 
 ## Create service-port
 Provision ONT on PON Port 0/8/0 ONT-ID 0
 <pre>
- service-port 627 vlan 326 gpon 0/8/0 ont 0 gemport 0 multi-service user-vlan 101 tag-transform translate inbound traffic-table name 160Mb outbound traffic-table name 160Mb
- service-port 628 vlan 327 gpon 0/8/0 ont 0 gemport 1 multi-service user-vlan 102 tag-transform translate inbound traffic-table index 160Mb outbound traffic-table name 160Mb
+service-port 627 vlan 326 gpon 0/8/0 ont 0 gemport 0 multi-service user-vlan 101 tag-transform translate inbound traffic-table name 160Mb outbound traffic-table name 160Mb
+service-port 628 vlan 327 gpon 0/8/0 ont 0 gemport 1 multi-service user-vlan 102 tag-transform translate inbound traffic-table index 160Mb outbound traffic-table name 160Mb
 </pre>
 
