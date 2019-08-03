@@ -214,4 +214,82 @@ Procedure:
 > [– Name |–VLAN ID (SVLAN) |–Connection Type: LAN-GPON |–Interface Selection (choose the GEM Port) |–Service Type: Multi-Service VLAN |– User VLAN (VLAN) |–Keep the upstream and downstream settings the same: selected]  
 
 
+## Procedures in summary
+
+<img width="262" alt="gponprovision" src="https://user-images.githubusercontent.com/50369643/62414231-f9f06200-b620-11e9-8ea1-a57449ae713a.PNG">
+
+## Configuration via CLI
+
+### Auto discover ONT
+ `dispaly ont autofind all`
+
+### Create Service-profile
+<pre>
+ ont-srvprofile gpon profile-name "SERV_PRF"
+  ont-port pots 2 eth 4 
+  transparent enable 
+  port vlan eth 1 translation 101 user-vlan 101
+  port vlan eth 1 translation 102 user-vlan 102
+  port vlan eth 1 translation 103 user-vlan 103
+  port vlan eth 1 translation 104 user-vlan 104
+  port vlan eth 1 translation 105 user-vlan 105
+  port vlan eth 2 translation 106 user-vlan 106
+  port vlan eth 3 translation 107 user-vlan 107
+  port vlan eth 4 translation 108 user-vlan 108
+  commit
+</pre>
+
+### Create DBA profile
+<pre>
+ dba-profile add profile-name "CIR_160Mb" type1 fix 163840 bandwidth_compensate no
+</pre>
+
+### Create Line-profile
+<pre>
+ ont-lineprofile gpon profile-name "LINE_PRF"
+  tcont 3 dba-profile-name CIR_160 
+  gem add 0 eth tcont 3 | Add GEM-Port 0 to T-CONT 3
+  gem add 1 eth tcont 3
+  gem add 2 eth tcont 3
+  gem add 3 eth tcont 3
+  gem add 4 eth tcont 3
+  gem add 5 eth tcont 3
+  gem add 6 eth tcont 3
+  gem add 7 eth tcont 3
+  gem mapping 0 0 vlan 101 | on GEM-Port 0 add Gem-connection 0 with CVLAN 101
+  gem mapping 1 1 vlan 102 | on GEM-Port 1 add Gem-connection 1 with CVLAN 102
+  gem mapping 2 2 vlan 103
+  gem mapping 3 3 vlan 104
+  gem mapping 4 4 vlan 105
+  gem mapping 5 5 vlan 106
+  gem mapping 6 6 vlan 107
+  gem mapping 7 7 vlan 108
+  commit
+  quit
+</pre>
+
+### Create traffic profile to be used on service-port
+ `traffic table ip name "160Mb" cir 163840 cbs 5242880 pir 158720 pbs 5242880 priority 0 priority-policy local-setting`
+
+### Create SVLAN
+ `vlan desc 326 description "CUSTOMER1"`
+
+### Add the SVLAN to the ethernet port to PE
+The OLT port connecting to PE is 0/7/0  
+ `port vlan 234 0/7 0 `
+ 
+
+### Add ONT
+Frame 0 Slot 8 Port 0 ONT-ID 0
+<pre>
+ interface gpon 0/8
+ ont add 0 0 sn-auth "4857544308D8DD10" omci ont-lineprofile-name LINE_PRF ont-srvprofile-name SRV_PRF desc "SITE1" 
+</pre>
+
+## Create service-port
+Provision ONT on PON Port 0/8/0 ONT-ID 0
+<pre>
+ service-port 627 vlan 326 gpon 0/8/0 ont 0 gemport 0 multi-service user-vlan 101 tag-transform translate inbound traffic-table name 160Mb outbound traffic-table name 160Mb
+ service-port 628 vlan 327 gpon 0/8/0 ont 0 gemport 1 multi-service user-vlan 102 tag-transform translate inbound traffic-table index 160Mb outbound traffic-table name 160Mb
+</pre>
 
