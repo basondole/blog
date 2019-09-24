@@ -60,7 +60,7 @@ Again, the syntax for each of the below actions is shown in the next snapshot
 #### Genie
 Genie is both a library framework and a test harness that facilitates rapid development, encourage re-usable and simplify writing test automation. Genie was initially developed internally in Cisco, and is now available to the general public. Genie offers both a python library and a cli based tool you can use directly from your command prompt (or terminal) without running the python interpreter. Learn more about Genie at https://developer.cisco.com/site/pyats/
 
-Genie uses the idea of testbeds where basically a testbed is where you define parameters of your device such as IP address, hostnames, login credential and transport protocol. Basically it is an equivalent of ansible inventory or routers.db for rancid respectively if you have worked with those before. Ansible is gonna be covered later in this write up, for rancid learn more via https://github.com/basondole/tutorials/rancid  
+Genie uses the idea of testbeds where basically a testbed is where you define parameters of your device such as IP address, hostnames, login credential and transport protocol. Basically it is an equivalent of ansible inventory or routers.db for rancid respectively if you have worked with those before. Ansible is gonna be covered later in this write up, for rancid learn more via https://github.com/basondole/tutorials/tree/master/rancid   
 
 Genie supports both telnet and ssh as transport protocols the caveat is however, similar to rancid and ansible, genie does not natively run on windows and since it also a non-standard python to install genie on a non-windows machine with python and pip installed do: `pip install genie`
 
