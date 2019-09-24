@@ -32,7 +32,7 @@ For the syntax in the python interpreter where each numbered action is executed 
 7.	Send another sample command to the device  
 8.	End the session and neatly exist.  
 
-<telnet images>
+> telnet images
 
 #### Paramiko
 Paramiko uses the SSH protocol to communicate with devices and sends raw cli commands as it will be shown in the demonstration. In very light language paramiko does what the telnetlib does but with SSH instead of telnet however paramiko is not a standard python library and must be installed separately.  
@@ -42,4 +42,28 @@ Pre-requisite:
 2.	paramiko library is installed on the local working station  
 
 ##### Paramiko demo
-Again, the syntax for each of the below actions is shown in the next snapshot
+Again, the syntax for each of the below actions is shown in the next snapshot  
+1.	Import the paramiko module  
+2.	Create a paramiko ssh client object  
+3.	Specify the policy for missing host keys from the ssh server  
+4.	Define login parameters  
+5.	Connect to the device  
+6.	Invoke the device shell to interact with  
+7.	Send command  
+8.	Retrieve the output from the device  
+9.	Send another sample command  
+10.	Retrieve the output from the device  
+11.	Close the session neatly  
+
+> paramiko images
+
+#### Genie
+Genie is both a library framework and a test harness that facilitates rapid development, encourage re-usable and simplify writing test automation. Genie was initially developed internally in Cisco, and is now available to the general public. Genie offers both a python library and a cli based tool you can use directly from your command prompt (or terminal) without running the python interpreter. Learn more about Genie at https://developer.cisco.com/site/pyats/
+
+Genie uses the idea of testbeds where basically a testbed is where you define parameters of your device such as IP address, hostnames, login credential and transport protocol. Basically it is an equivalent of ansible inventory or routers.db for rancid respectively if you have worked with those before. Ansible is gonna be covered later in this write up, for rancid learn more via https://github.com/basondole/tutorials/rancid  
+
+Genie supports both telnet and ssh as transport protocols the caveat is however, similar to rancid and ansible, genie does not natively run on windows and since it also a non-standard python to install genie on a non-windows machine with python and pip installed do: `pip install genie`
+
+Sample genie testbed
+
+>genie snaps
