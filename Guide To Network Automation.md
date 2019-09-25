@@ -179,9 +179,9 @@ Your workstation is the manager whereas the network device is running the agent 
 7.	Verify the operation was successful  
 8.	Import a library that will help us convert xml data returned by netconf to a python dictionary which is easier to navigate  
 9.	Convert the xml data collected at step 6 to a python dictionary  
-10.	To extract the actual data, since netconf returns structured data we have to navigate to specific blocks of information in this case we go to the ‘rpc-reply’ section then dive into the ‘data’ section which is a leaf of the ‘rpc-reply’  
+10.	To extract the actual data, since netconf returns structured data we have to navigate to specific blocks of information in this case we go to the `rpc-reply` section then dive into the `data` section which is a leaf of the `rpc-reply`  
 11.	Use the dictionary keys (which I already know because I know the data structure) to access the data of interest in this case we are extracting the interface name. In this case we get the return value datatype (OrderedDict) the data model (ietf…) and the #text which is the name of the interface  
-12.	Get the ipv4 address configured on the interface, we follow same paradigm as above except we want the key ‘ipv4’ instead of ‘name’  
+12.	Get the ipv4 address configured on the interface, we follow same paradigm as above except we want the key `ipv4` instead of `name`  
 13.	To send config to the device we create an xml block of our desired config. Here we are creating interface looopback0 and assign an ipv4 address as well as description  
 14.	Push the config to the device running config  
 15.	Verify the operation was successful  
@@ -219,10 +219,10 @@ In this demo we use PyEZ API to send commands to a junos device as well as equiv
 1.	Import the Device module from junos library  
 2.	Define login parameters  
 3.	Open a session with the JunOS device  
-4.	Make an rpc call to get bgp information from the device. The {‘format’:’text’} is used to convert the xml data returned by the device to a human readable format.  
+4.	Make an rpc call to get bgp information from the device. The `{‘format’:’text’}` is used to convert the xml data returned by the device to a human readable format.  
 5.	Convert the text data into a format as the one displayed when issuing a CLI command  
 6.	Print the output  
-7.	Get bgp information using cli command, the warning=False clause is to stop the warning message when using the cli method as the writers of PyEZ discourage using this method unless it is for debugging  
+7.	Get bgp information using cli command, the `warning=False` clause is to stop the warning message when using the cli method as the writers of PyEZ discourage using this method unless it is for debugging  
 8.	Print the results  
 
 ![pyez](https://user-images.githubusercontent.com/50369643/65577340-48b0dd00-df7c-11e9-965e-e6e0426edc98.png)
@@ -242,9 +242,9 @@ Procedures:
 7.	Display the rpc command which is `get-route-information`  
 8.	Get the rpc command equivalent for the cli command `show system alarms`  
 9.	Display the rpc command which is `get-system-alarm-information`  
-10.	Make an rpc call using the rpc command from step 9. Note `–` are replaced by `_`  
-11.	Print the results from the device  
-12.	Close the connection  
+10. Make an rpc call using the rpc command from step 9. Note `–` are replaced by `_`  
+11. Print the results from the device  
+12. Close the connection  
 
 ![pyez2](https://user-images.githubusercontent.com/50369643/65577339-48b0dd00-df7c-11e9-9d0b-a1186398bb65.png)
 
@@ -256,7 +256,7 @@ NAPALM stands for Network Automation and Programmability Abstraction Layer with 
 
 
 ##### NAPALM with Cisco IOS
-To enable NAPALM interaction with IOS devices configure 'ip scp server enable' on the device.
+To enable NAPALM interaction with IOS devices configure `ip scp server enable` on the device.
 
 ![napalm cisco](https://user-images.githubusercontent.com/50369643/65577544-a9401a00-df7c-11e9-8e25-9aa189c3f215.png)
 
@@ -269,11 +269,11 @@ In the demonstration we use napalm to interact with a Cisco IOS device send conf
 5.	Use napalm to get facts about the device and we see from the list of interfaces we do not have loopback1 (We are goingto create loopback1 in the following steps)  
 6.	Create configuration for loopback 1 interface following the ios CLI syntax  
 7.	Load the configuration to the device (without saving the config)  
-8.	Do a diff to compare the loaded config and the running config, the ‘+’ sign means we are adding the respective config. Note this feature is not natively available in regular Cisco IOS  
+8.	Do a diff to compare the loaded config and the running config, the `+` sign means we are adding the respective config. Note this feature is not natively available in regular Cisco IOS  
 9.	Commit the configuration on the device  
-10.	Get the facts from the device again, this time we see interface loopback1 is present since we added it with the commit operation on step 9  
-11.	Issue a rollback operation to delete interface loopback1  
-12.	Close the session  
+10. Get the facts from the device again, this time we see interface loopback1 is present since we added it with the commit operation on step 9  
+11. Issue a rollback operation to delete interface loopback1  
+12. Close the session  
 
 ![napalmcisco2](https://user-images.githubusercontent.com/50369643/65577543-a9401a00-df7c-11e9-8d2f-4455636f7d7b.png)
 
@@ -310,6 +310,7 @@ Below is what happened to on the device
 Nornir is an automation framework written in python with multiple threading capabilities. Nornir has a simple inventory which uses two YAML files  
 -	Hosts.yaml  
 -	Groups.yaml (optional)  
+
 See below snapshot of the files for my demo setup  
 
 ![nornir1](https://user-images.githubusercontent.com/50369643/65577847-4e5af280-df7d-11e9-9a35-184d738cfff5.png)
@@ -327,12 +328,12 @@ See below snapshot of the files for my demo setup
 
 ![nornir3](https://user-images.githubusercontent.com/50369643/65577849-4ef38900-df7d-11e9-9246-58e8617836e7.png)
 
-8.  Import a netmiko send config function for sending config to the device  
-9.	Filter the hosts to only hosts running cisco_ios  
-10.	Create config for interface loopback10  
-11.	Send config to the device  
-12.	Display the results and we see the change flag is now True, this is because we have actually changed the device config  
-13.	Close the session.  
+8. Import a netmiko send config function for sending config to the device  
+9. Filter the hosts to only hosts running cisco_ios  
+10. Create config for interface loopback10  
+11. Send config to the device  
+12. Display the results and we see the change flag is now True, this is because we have actually changed the device config  
+13. Close the session.  
 
 ![nornir4](https://user-images.githubusercontent.com/50369643/65577848-4ef38900-df7d-11e9-856a-162bf9f650b2.png)
 
