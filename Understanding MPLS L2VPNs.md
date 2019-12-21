@@ -362,8 +362,9 @@ router bgp 1
 #### References
 https://blog.marquis.co/layer-2-vpns-on-junos/  
 https://mellowd.co.uk/ccie/l2vpn-on-junos-using-cccmartinikompella/  
-https://www.inetzero.com/vpls-some-simples-configurations/
-https://networkzblogger.com/2017/05/03/mpls-l2vpn-configuration-example-juniper-l2circuit-mpls-l2vpn-tutorial-what-is-l2vpn-l2vpn-wiki-how-l2vpn-works-l2vpn-juniper-kompella/
-https://www.cisco.com/c/en/us/support/docs/ios-nx-os-software/virtual-private-lan-services-vpls/116121-tech-vpls-bgp-00.html#anc7
+https://www.inetzero.com/vpls-some-simples-configurations/  
+https://networkzblogger.com/2017/05/03/mpls-l2vpn-configuration-example-juniper-l2circuit-mpls-l2vpn-tutorial-what-is-l2vpn-l2vpn-wiki-how-l2vpn-works-l2vpn-juniper-kompella/  
+https://www.cisco.com/c/en/us/support/docs/ios-nx-os-software/virtual-private-lan-services-vpls/116121-tech-vpls-bgp-00.html#anc7  
+https://null.53bits.co.uk/index.php?page=vpls-ios-xr-to-junos
 
 
