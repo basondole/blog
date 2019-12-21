@@ -10,6 +10,23 @@ QoS includes these capabilities:
 
 
 Below diagram shows the building blocks of QoS
+
+<pre>
+
+    +-----------------------------------------------------------------------------------------------------+      
+    |                                            NETWORK DEVICE                                           |      
+    |                                                                                                     |      
+    |  +--------------+   +------------+   +---------+    +----------+    +----------+     +----------+   |      
+    |  |              |   |   input    |   |         |    |          |    |  shaper  |     |          |   |      
+-------|classification|---|  policing  |---| queuing |----|scheduling|----|(optional)|-----|remarking |------->
+    |  |              |   | (optional) |   |         |    |          |    |          |     |          |   |      
+    |  +--------------+   +------------+   +---------+    +----------+    +----------+     +----------+   |      
+    |                                                                                                     |      
+    |                                                                                                     |      
+    +-----------------------------------------------------------------------------------------------------+      
+    |<-----------   ingress  ----------->||<-------------------------  egress  -------------------------->|
+
+</pre>
  
 
 ## Classification
@@ -384,24 +401,31 @@ paul@big# run show class-of-service interface ge-0/0/0.1000
 
 ## Summary with network scenario and configuration
 
- 
-Fig: MPLS PE-CE network
+                        +-----------------------+
+                        |                       |
+                        |                       |
+                    +---+---+              +----+---+
+            +-------+  PE   |   MPLS CORE  |   PE   +------+
+            |       +---+---+              +----+---+      |
+            |           |                       |          |
+            |           |                       |          |
+         +--+---+       +-----------------------+      +---+--+
+         | CE1  |                                      |  CE2 |
+         +------+                                      +------+
+
+                         Fig: MPLS PE-CE network
 
 In this scenario the MPLS core network is configured with 4 queues with markings as described in the below table.
 
-+---------------------+-------+---------------+----------------+  
-|CLASS OF SERVICE	    | QUEUE | LOSS PRIORITY	|EXP COS MARKING |  
-+---------------------+-------+---------------+----------------+  
-|Expedited Forwarding	| 0   	| Low           |	101 (5)        |  
-+---------------------+-------+---------------+----------------+  
-|Assured Forwarding   |	1     |	Low	          | 100 (4)        |  
-+---------------------+-------+---------------+----------------+  
-|Network Control	    | 2     |	Low           |	110 (6)        |  
-+---------------------+-------+---------------+----------------+  
-|Best Effort          |	3     |	Low           |	000 (0)        |  
-+---------------------+-------+---------------+----------------+  
 
-Table: MPLS EXP COS Markings
+|CLASS OF SERVICE	    | QUEUE | LOSS PRIORITY	|EXP COS MARKING |  
+|---------------------|-------|---------------|----------------|  
+|Expedited Forwarding	| 0    	| Low           |	101 (5)        |   
+|Assured Forwarding   |	1     |	Low	          | 100 (4)        |  
+|Network Control	     | 2     |	Low           |	110 (6)        |  
+|Best Effort          |	3     |	Low           |	000 (0)        |  
+
+
 
 > Note: All of the configuration displayed below are under the class-of-service stanza  
 
@@ -531,7 +555,7 @@ interfaces {
 }
 </pre>
 
-CUSTOMER FACING INTERFACES
+CUSTOMER FACING INTERFACES  
 This configuration is done on PE routers with customers requiring QoS. To be configured using Fixed, BA or MF classifiers and mapped to forwarding classes as see fit. Below example uses fixed classification to put all the traffic from CE to the assured forwarding class.
 <pre>
 interfaces {                            
