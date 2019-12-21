@@ -12,11 +12,12 @@ The point to point L2VPNS are technically referred to as Virtual Private Wire Se
 This type of VPWS uses LDP as its signalling protocol. They are mostly referred to as layer 2 circuit or cross-connect. This implementation does not offer auto discovery features and both ends of the connections have to be configured manually to establish targeted LDP sessions. There is another implementation of this that uses IP instead of MPLS to tunnel layer 2 traffic called L2TPv3 in Cisco.
 
 ### 2. VPWS Kompella using BGP auto-discovery and signalling
-This type of VPWS uses BGP instead of LDP, in fact this implementation offers auto discovery options in which the neighbours participating in a layer 2 connection can be discovered automatically and sessions will be established using BGP as a signalling protocol. Hence BGP is used as both neighbor discovery protocol and signalling protocol.
+This type of VPWS uses BGP instead of LDP, the neighbours participating in a layer 2 connection can be discovered automatically and sessions will be established using BGP as a signalling protocol. BGP is used as both neighbor discovery protocol and signalling protocol.
 To accommodate these features a new BGP NLRI was introduced to the NLRI is l2vpn. This design uses the concept of site-ids to establish sessions, the site ids are supposed to be on contagious blocks also uses extended BGP communities to carry neighbour and layer 2 route information such as route-target, route-distinguisher, site-id and remote-site-id.
 
 ### 3. VPWS BGP Auto discovery and LDP signalling FEC129;
-Very much like the previous design, this type of VPWS uses BGP for neighbour discovery only then LDP is used for signalling. This implementation uses BGP NLRI l2vpn for auto-discovery-only.
+Very much like the previous design, this type of VPWS uses BGP for neighbour discovery only then LDP is used for signalling. This implementation uses BGP NLRI l2vpn for auto-discovery-only as well as extended BGP communities; route targets and l2vpn-id.
+The presence of the l2vpn-id designates that FEC 129 LDP signaling is used for the routing instance. The absence of l2vpn-id indicates that BGP signaling is used instead
 
 # Point to multipoint L2VPNs
 The point to point L2VPNS are technically referred to as Virtual Private Line Service (VPLS) in this type of configuration the provider networks acts as a switch and the PEs involved will be learning mac-address information.
@@ -25,7 +26,8 @@ The point to point L2VPNS are technically referred to as Virtual Private Line Se
 This implementation requires neighbouring routers participating in the VPLS instance to be explicitly configured on each of the participating routers and it uses LDP as the signalling protocol.
 
 ### 2. VPLS BGP Auto discovery and LDP signalling FEC129
-This is an enhancement to the above implementation that offers auto discovery of neighbors participating in a VPLS instance. Uses the BGP NLRI l2vpn for auto-discovery-only as well as extended BGP communities such as route-distinguishers and route targets.
+This is an enhancement to the above implementation that offers auto discovery of neighbors participating in a VPLS instance. Uses the BGP NLRI l2vpn for auto-discovery-only as well as extended BGP communities; route targets and l2vpn-id.
+FEC 129 uses BGP autodiscovery to convey endpoint information, so you do not need to manually configure pseudowires. BGP is responsible for distributing the local autodiscovery routes created on each PE device to all other PE devices. LDP is responsible for using the autodiscovery information provided by BGP to set up targeted LDP sessions over which to signal the pseudowires.
 
 ### 3. VPLS BGP Auto discovery and BGP signalling
 This implementation uses BGP for both neighbors discovery and signalling.
@@ -161,3 +163,8 @@ show vpls mac-table instance VPLS
 </pre>
 
 
+
+#### References
+https://blog.marquis.co/layer-2-vpns-on-junos/  
+https://mellowd.co.uk/ccie/l2vpn-on-junos-using-cccmartinikompella/  
+https://www.inetzero.com/vpls-some-simples-configurations/
