@@ -183,6 +183,124 @@ show vpls connections instance VPLS
 show vpls mac-table instance VPLS
 </pre>
 
+## VPLS BGP Auto discovery and LDP signalling FEC129
+### JunOS config
+### IOSXR config
+
+### VPLS BGP Auto discovery and BGP signalling
+
+### JunOS config
+<pre>
+set protocols mpls interface ge-1/3/0.0
+set protocols ldp interface ge-1/3/0.0
+set protocols ldp interface lo0.0
+
+set protocols bgp group ibgp type internal
+set protocols bgp group ibgp local-address 1.1.1.1
+set protocols bgp group ibgp family inet-vpn unicast
+set protocols bgp group ibgp family l2vpn signaling
+set protocols bgp group ibgp neighbor 1.1.1.2 local-as 65000
+
+set interfaces ge-1/3/2 encapsulation ethernet-vpls
+set interfaces ge-1/3/2 unit 0 family vpls
+
+set routing-instance vlan100 instance-type vpls
+set routing-instance vlan100 interface ge-1/3/2.0
+set routing-instance vlan100 route-distinguisher 1.1.1.1:100
+set routing-instance vlan100 vrf-target target:65000:100
+set routing-instance vlan100 protocols vpls
+set routing-instance vlan100 protocols vpls site-range 8
+set routing-instance vlan100 protocols vpls no-tunnel-service
+set routing-instance vlan100 protocols vpls site my_site site-identifier 2
+set routing-instance vlan100 protocols vpls site my_site interface ge-1/3/2.0
+</pre>
+
+
+### IOSXR config
+<pre>
+router bgp 65000
+ neighbor-group ibgp-pe
+  remote-as 65000
+  update-source Loopback0
+  address-family l2vpn vpls-vpws
+   signalling ldp disable   ! Required to used BGP for signalling
+   exit
+  exit
+ 
+ neighbor 1.1.1.1
+  use neighbor-group ibgp-pe
+  exit
+
+ exit
+
+l2vpn
+ autodiscovery bgp
+  signaling-protocol bgp
+   mtu mismatch ignore
+   exit
+  exit
+
+ bridge group v100
+  bridge-domain v100
+   interface TenGigE0/0/0/0.100
+   vfi v100
+    vpn-id 100
+    autodiscovery bgp
+     rd auto
+     route-target import 65000:100
+     route-target export 65000:100
+     signaling-protocol bgp
+      ve-id 5
+      ve-range 11
+      exit
+     exit
+    exit
+   exit
+ exit
+interface TenGigE0/0/0/0.100 l2transport
+ encapsulation dot1q 100
+ rewrite ingress tag pop 1 symmetric
+ exit
+</pre>
+
+### IOS Config
+<pre>
+l2vpn vfi context one
+ vpn id 100
+ autodiscovery bgp signaling bgp 
+  ve id 1001
+  ve range 50
+  route-target export 32:64
+  route-target import 32:64
+
+mpls label range 10000 20000
+
+!
+bridge-domain 1
+ member Ethernet0/0 service-instance 100
+ member vfi one
+
+!
+l2 router-id 10.100.1.1
+!
+
+interface Ethernet0/0
+ no ip address
+ service instance 100 ethernet
+ !
+
+!
+router bgp 1
+ bgp log-neighbor-changes
+ neighbor 10.100.1.4 remote-as 1
+ neighbor 10.100.1.4 update-source Loopback0
+ !
+ address-family l2vpn vpls
+  neighbor 10.100.1.4 activate
+  neighbor 10.100.1.4 send-community extended
+  neighbor 10.100.1.4 suppress-signaling-protocol ldp
+ exit-address-family
+ </pre>
 
 
 #### References
