@@ -116,6 +116,7 @@ Connection: 4 - TEST
 
 
 ### VPWS Kompella using BGP auto-discovery and signalling
+> Not supported by Cisco
 #### JunOS Configuration
 <pre>
 set protocols bgp group ibgp family l2vpn signaling
