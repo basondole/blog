@@ -203,6 +203,26 @@ set routing-instances vlan100 vrf-target target:65000:100
 set routing-instances vlan100 protocols vpls no-tunnel-services
 </pre>
 
+### IOS config
+<pre>
+l2vpn vfi context vpls1 
+ vpn id 100
+ autodiscovery bgp signaling ldp
+ exit
+ 
+router bgp 1
+ no bgp default ipv4-unicast
+ bgp log-neighbor-changes
+ bgp update-delay 1
+ neighbor 10.1.1.2 remote-as 1
+ neighbor 10.1.1.2 update-source Loopback1  
+ address-family l2vpn vpls
+ neighbor 10.1.1.2 activate
+ neighbor 10.1.1.2 send-community extended  
+exit-address-family 
+</pre>
+> The RD is taken from [ASN:vpn id], unless a RD is explicitely configured. Here, the RD is 1:100.
+
 ### IOSXR config
 <pre>
 router bgp 65000
