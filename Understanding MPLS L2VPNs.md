@@ -185,7 +185,63 @@ show vpls mac-table instance VPLS
 
 ## VPLS BGP Auto discovery and LDP signalling FEC129
 ### JunOS config
+<pre>
+set protocols bgp group ibgp type internal
+set protocols bgp group ibgp local-address 1.1.1.1
+set protocols bgp group ibgp family inet-vpn unicast
+set protocols bgp group ibgp family l2vpn auto-discovery-only
+set protocols bgp group ibgp neighbor 1.1.1.2 local-as 65000
+
+set interfaces ge-1/3/2 encapsulation ethernet-vpls
+set interfaces ge-1/3/2 unit 0 family vpls
+
+set routing-instances vlan100 instance-type vpls
+set routing-instances vlan100 interface ge-1/3/2.0
+set routing-instances vlan100 route-distinguisher 1.1.1.1:100
+set routing-instances vlan100 l2vpn-id l2vpn-id:65000:100
+set routing-instances vlan100 vrf-target target:65000:100
+set routing-instances vlan100 protocols vpls no-tunnel-services
+</pre>
+
 ### IOSXR config
+<pre>
+router bgp 65000
+ neighbor-group ibgp-pe
+  remote-as 65000
+  update-source Loopback0
+  address-family l2vpn vpls-vpws
+  exit
+
+ neighbor 1.1.1.1
+  use neighbor-group ibgp-pe
+  exit
+
+ exit
+
+l2vpn
+ bridge group v100
+  bridge-domain v100
+   interface TenGigE0/0/0/0.100
+   vfi v100
+    vpn-id 100
+    autodiscovery bgp
+     rd auto
+     route-target import 65000:100
+     route-target export 65000:100
+     signaling-protocol ldp
+      vpls-id 65000:100
+      exit
+     exit
+    exit
+   exit
+  exit
+
+interface TenGigE0/0/0/0.100 l2transport
+ encapsulation dot1q 100
+ rewrite ingress tag pop 1 symmetric
+ exit
+</pre>
+
 
 ### VPLS BGP Auto discovery and BGP signalling
 
@@ -308,4 +364,6 @@ https://blog.marquis.co/layer-2-vpns-on-junos/
 https://mellowd.co.uk/ccie/l2vpn-on-junos-using-cccmartinikompella/  
 https://www.inetzero.com/vpls-some-simples-configurations/
 https://networkzblogger.com/2017/05/03/mpls-l2vpn-configuration-example-juniper-l2circuit-mpls-l2vpn-tutorial-what-is-l2vpn-l2vpn-wiki-how-l2vpn-works-l2vpn-juniper-kompella/
+https://www.cisco.com/c/en/us/support/docs/ios-nx-os-software/virtual-private-lan-services-vpls/116121-tech-vpls-bgp-00.html#anc7
+
 
