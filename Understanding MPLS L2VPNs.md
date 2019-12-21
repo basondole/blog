@@ -14,6 +14,7 @@ This type of VPWS uses LDP as its signalling protocol. They are mostly referred 
 ### 2. VPWS Kompella using BGP auto-discovery and signalling
 This type of VPWS uses BGP instead of LDP, the neighbours participating in a layer 2 connection can be discovered automatically and sessions will be established using BGP as a signalling protocol. BGP is used as both neighbor discovery protocol and signalling protocol.
 To accommodate these features a new BGP NLRI was introduced to the NLRI is l2vpn. This design uses the concept of site-ids to establish sessions, the site ids are supposed to be on contagious blocks also uses extended BGP communities to carry neighbour and layer 2 route information such as route-target, route-distinguisher, site-id and remote-site-id.
+> Note: Cisco does not support this implementation
 
 ### 3. VPWS BGP Auto discovery and LDP signalling FEC129;
 Very much like the previous design, this type of VPWS uses BGP for neighbour discovery only then LDP is used for signalling. This implementation uses BGP NLRI l2vpn for auto-discovery-only as well as extended BGP communities; route targets and l2vpn-id.
@@ -114,6 +115,25 @@ Connection: 4 - TEST
 </pre>
 
 
+### VPWS Kompella using BGP auto-discovery and signalling
+#### JunOS Configuration
+<pre>
+set protocols bgp group ibgp family l2vpn signaling
+
+set routing-instances l2vpn instance-type l2vpn
+set routing-instances l2vpn interface ge-0/0/1.0
+set routing-instances l2vpn route-distinguisher 64512:1000
+set routing-instances l2vpn vrf-target target:64512:1000
+set routing-instances l2vpn protocols l2vpn encapsulation-type ethernet
+set routing-instances l2vpn protocols l2vpn site 1 site-identifier 1
+set routing-instances l2vpn protocols l2vpn site 1 interface ge0/0/1.0 remote-site-id 2
+
+show route table L2VPN.l2vpn.0
+show l2vpn connections up
+
+</pre>
+
+
 ## VPLS Manual discovery and LDP signalling FEC128  
 <img width="646" alt="VPLS Manual ldp" src="https://user-images.githubusercontent.com/50369643/62411862-758ee680-b602-11e9-9024-18ec973a257e.png">  
 
@@ -168,3 +188,5 @@ show vpls mac-table instance VPLS
 https://blog.marquis.co/layer-2-vpns-on-junos/  
 https://mellowd.co.uk/ccie/l2vpn-on-junos-using-cccmartinikompella/  
 https://www.inetzero.com/vpls-some-simples-configurations/
+https://networkzblogger.com/2017/05/03/mpls-l2vpn-configuration-example-juniper-l2circuit-mpls-l2vpn-tutorial-what-is-l2vpn-l2vpn-wiki-how-l2vpn-works-l2vpn-juniper-kompella/
+
