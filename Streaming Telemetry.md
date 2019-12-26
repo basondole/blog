@@ -15,9 +15,15 @@ Streaming telemetry has the potential to provide near real-time network data, ac
 
 ### Streaming formats
 With streaming telemetry, the telemetry data is described using YANG, a structured data modelling language, encoded in JSON, XML or using GBP and is then streamed over TCP, UDP or gRPC
+`grpc` is an open source framework that provides secure and reliable transport of data.
+
 
 #### Native Streaming
 This format uses a proprietary data model defined by the equipment vendor, using `gpb` as a means of serializing and structuring telemetry data messages. Data is transported via UDP and is exported close to the source, such as directly from a line card or network processing unit (NPU).  
 
 #### OpenConfig Streaming
 This format utilizes OpenConfig data models and key/value pair based Google protocol buffer messages for streaming telemetry data. Unlike native format, data is transported via gRPC over HTTP2 and is exported to the collector centrally from the Routing Engine (RE).
+
+### Streaming methods
+- Cadence-driven (sample-interval non 0)
+- Event-driven (sample-interval 0)
