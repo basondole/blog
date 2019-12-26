@@ -44,13 +44,33 @@ Below configuration between Cisco IOS XE and JunOS with existing IP and MPLS und
 ### Cisco config and verification
 <pre>
 interface Gi0/0/0.1001
-Encapsulation dot1q 1001
-xconnect 10.2.2.2 1001 encapsulation mpls
-
+  encapsulation dot1q 1001
+  xconnect 10.2.2.2 1001 encapsulation mpls
+!
 show xconnect interface Gi0/0/0.1001
 show mpls l2transport vc 1001
 show l2vpn atom vc vcid 1001
 </pre>
+
+Altenatively using manual pseudowires
+<pre>
+interface Gi0/0/0
+  service instance 1001 ethernet
+    encapsulation dot1q 1001
+!
+interface pseudowire 1001
+  neighbor 10.2.2.2 1001
+  encapsulation mpls
+  signaling protocol ldp
+! 
+l2vpn xconnect context L2C-1001 
+  member Gi0/0/0 service-instance 1001
+  member pseudowire 1001
+
+show l2vpn service xconnect all
+show l2vpn atom vc
+</pre>
+
 
 ### JunOS config and verification
 <pre>
@@ -159,6 +179,35 @@ show mpls l2transport vc 1000
 show xconnect name VPLS
 show bridge-domain 1000 mac dynamic address
 </pre>
+
+Altenatively using manual pseudowires
+
+<pre>
+interface GigabitEthernet1
+  service instance 1000 ethernet
+    encapsulation dot1q 1000
+!
+interface pseudowire 2
+  neighbor 10.2.2.2 1000
+  encapsulation mpls
+!
+interface pseudowire 3
+  neighbor 10.3.3.3 1000
+  encapsulation mpls
+!
+l2vpn vfi context VPLS
+  vpn id 1000
+  member pseudowire 2
+  member pseudowire 3
+!
+bridge-domain 100
+  member GigabitEthernet1 service-instance 1000
+  member vfi VPLS
+
+show l2vpn service xconnect all
+show l2vpn atom vc
+</pre>
+
 
 ### JunOS config and verification
 <pre>
