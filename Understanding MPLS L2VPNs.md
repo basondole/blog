@@ -122,9 +122,11 @@ set interfaces ge-0/0/2.4094 vlan-id 4094 encapsulation vlan-ccc family ccc
 #### Cisco IOS configuration
 <pre>
 interface GigabitEthernet1.4094
-	encapsulation dot1q 4094
+  encapsulation dot1q 4094
+!
 interface Gigabitthernet2.4094
- 	encapsulation dot1q 4094
+  encapsulation dot1q 4094
+!
 connect TEST Gig1.4094 Gig2.4094
 
 sh connection name TEST
@@ -132,6 +134,8 @@ Connection: 4 - TEST
  Current State: ADMIN UP
  Segment 1: GigabitEthernet1.4094 up
  Segment 2: GigabitEthernet2.4094 up
+
+sh xconnect name TEST
 </pre>
 
 
