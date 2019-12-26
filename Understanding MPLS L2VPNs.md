@@ -71,7 +71,20 @@ show l2vpn service xconnect all
 show l2vpn atom vc
 </pre>
 
-
+### Cisco IOSXR
+<pre>
+interface GigabitEthernet0/0/0/0.1001 l2transport
+ encapsulation dot1q 1001
+!
+l2vpn
+ xconnect group L2CIRCUIT
+  p2p VLAN-1001
+   interface GigabitEthernet0/0/0/0.1001
+   neighbor 10.2.2.2 pw-id 1
+ 
+ sh l2vpn xconnect 
+ </pre>
+ 
 ### JunOS config and verification
 <pre>
 set interface ge-0/0/0.1001 vlan-id 1001
@@ -137,6 +150,24 @@ Connection: 4 - TEST
 
 sh xconnect name TEST
 </pre>
+
+#### Cisco IOSXR configuration
+<pre>
+interface GigabitEthernet0/0/0/0.1000 l2transport
+ encapsulation dot1q 1000
+!
+interface GigabitEthernet0/0/0/1.1000 l2transport
+ encapsulation dot1q 1000
+!
+l2vpn
+ xconnect group LOCAL
+  p2p SWITCH
+   interface GigabitEthernet0/0/0/0.1000
+   interface GigabitEthernet0/0/0/1.1000
+ 
+ sh l2vpn xconnect 
+ </pre>
+ 
 
 
 ### VPWS Kompella using BGP auto-discovery and signalling
@@ -204,7 +235,7 @@ l2vpn vfi context VPLS
   member pseudowire 2
   member pseudowire 3
 !
-bridge-domain 100
+bridge-domain 1000
   member GigabitEthernet1 service-instance 1000
   member vfi VPLS
 
@@ -212,6 +243,18 @@ show l2vpn service xconnect all
 show l2vpn atom vc
 </pre>
 
+### Cisco IOSXR
+<pre>
+l2vpn
+ bridge group VPLS
+  bridge-domain VLAN-1000
+   interface GigabitEthernet0/0/0/1.1000
+   !
+   vfi VPLS-VLAN-1000
+    neighbor 10.2.2.2 pw-id 3
+    neighbor 10.3.3.3 pw-id 3
+
+</pre>
 
 ### JunOS config and verification
 <pre>
@@ -235,6 +278,7 @@ set routing-instances VPLS protocols vpls neighbor 10.3.3.3
 show vpls connections instance VPLS
 show vpls mac-table instance VPLS
 </pre>
+
 
 ## VPLS BGP Auto discovery and LDP signalling FEC129
 ### JunOS config
@@ -284,17 +328,14 @@ router bgp 65000
   update-source Loopback0
   address-family l2vpn vpls-vpws
   exit
-
+ !
  neighbor 1.1.1.1
   use neighbor-group ibgp-pe
-  exit
-
- exit
-
+!
 l2vpn
  bridge group v100
   bridge-domain v100
-   interface TenGigE0/0/0/0.100
+   interface Gig0/0/0/0.100
    vfi v100
     vpn-id 100
     autodiscovery bgp
@@ -303,16 +344,10 @@ l2vpn
      route-target export 65000:100
      signaling-protocol ldp
       vpls-id 65000:100
-      exit
-     exit
-    exit
-   exit
-  exit
-
-interface TenGigE0/0/0/0.100 l2transport
+!
+interface Gig0/0/0/0.100 l2transport
  encapsulation dot1q 100
  rewrite ingress tag pop 1 symmetric
- exit
 </pre>
 
 
@@ -352,23 +387,16 @@ router bgp 65000
   remote-as 65000
   update-source Loopback0
   address-family l2vpn vpls-vpws
-   signalling ldp disable   ! Required to used BGP for signalling
-   exit
-  exit
- 
+   signalling ldp disable
+!
  neighbor 1.1.1.1
   use neighbor-group ibgp-pe
-  exit
-
- exit
-
+!
 l2vpn
  autodiscovery bgp
   signaling-protocol bgp
    mtu mismatch ignore
-   exit
-  exit
-
+!
  bridge group v100
   bridge-domain v100
    interface TenGigE0/0/0/0.100
@@ -381,15 +409,10 @@ l2vpn
      signaling-protocol bgp
       ve-id 5
       ve-range 11
-      exit
-     exit
-    exit
-   exit
- exit
+!
 interface TenGigE0/0/0/0.100 l2transport
  encapsulation dot1q 100
  rewrite ingress tag pop 1 symmetric
- exit
 </pre>
 
 ### IOS Config
@@ -401,23 +424,18 @@ l2vpn vfi context one
   ve range 50
   route-target export 32:64
   route-target import 32:64
-
+!
 mpls label range 10000 20000
-
 !
 bridge-domain 1
  member Ethernet0/0 service-instance 100
  member vfi one
-
 !
 l2 router-id 10.100.1.1
 !
-
 interface Ethernet0/0
  no ip address
  service instance 100 ethernet
- !
-
 !
 router bgp 1
  bgp log-neighbor-changes
