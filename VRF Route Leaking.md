@@ -20,7 +20,7 @@
 </pre>
 
 ## Cisco ios
-### Method 1
+### ios:method 1
 Using the `vrf receive` command and policy based routing
 <pre>
 interface ethernet 01
@@ -45,7 +45,7 @@ The command `ip vrf receive VRF1` adds the connected subnet of global interface 
 and traffic from global to vrf is policy routed by the route-map applied under the global interface.
 
 
-### Method 2
+### ios:method 2
 Using static routes between the two tables
 <pre>
 ip route <network A> <mask> ethernet 01
@@ -61,7 +61,7 @@ interface interface 00
   ip address  172.16.1.2 255.255.255.0
 </pre>
 
-### Method 3
+### ios:method 3
 This method uses tunnel to connect the vrf to the global table as shown in below schematic
 
 <pre>
@@ -128,7 +128,7 @@ interface Tunnel2
 
 
 ## Cisco ios-xr
-### Method 1
+### iosxr:method 1
 Leaking routes between vrf and global using bgp
 <pre>
 vrf VRF
@@ -164,7 +164,7 @@ also because of the redistibute connected statement all the connected routes fro
 to the other
 
 
-### Method 2
+### iosxr:method 2
 Using static routes
 
 <pre>
@@ -176,7 +176,7 @@ router static
 > To be added: how to add static route in vrr to point to global
 
 
-### Method 3
+### iosxr:method 3
 Using BGP and route-targets to leak between two vrfs on the same router
 <pre>
 
@@ -258,7 +258,7 @@ router bgp 65500
            
 </pre>
 
-### Method 1
+### junos:method 1
 Using rib-groups and static routes from vrf to global
 <pre>
 pycon@pycon-junos# show routing-instances
@@ -312,7 +312,7 @@ rib-groups {
 Below config shows different way of applying the rib-groups for different protocols
 <pre>
 pycon@pycon-junos# show routing-instances
-attacker {
+VRF {
     routing-options {
         interface-routes {
             rib-group {
@@ -346,7 +346,7 @@ attacker {
 }
 </pre>
 
-### Method 3
+### junos:method 2
 Using RIB Groups to leak routes between vrf and global.
 In the example only interface routes will be leaked between the two table
 
@@ -371,7 +371,7 @@ routing-options {
 }
 </pre>
 
-### Method 3
+### junos:method 3
 Using instance import. This method is only applicable to vrfs of type virtual-routers.
 
 <pre>
@@ -395,7 +395,7 @@ routing-options {
 }
 </pre>
 
-### Method 4
+### junos:method 4
 Using RIB Groups between two vrfs on the same router
 
 <pre>
@@ -442,7 +442,7 @@ routing-options {
 
 </pre>
 
-### Method 5
+### junos:method 5
 Using route-target and auto-export to leak routes between two vrfs on the same router
 
 <pre>
